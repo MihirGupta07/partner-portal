@@ -8,6 +8,7 @@ const NavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Define navigation links
+  
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/assessments', label: 'Assessments' },
