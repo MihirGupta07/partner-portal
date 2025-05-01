@@ -31,7 +31,7 @@ const AssessmentsPage = () => {
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
-      const partnerAssessmentIds = currentPartner.assessments.map(a => a.id);
+      // const partnerAssessmentIds = currentPartner.assessments.map(a => a.id);
       
       const filtered = assessments.filter(assessment => {
         // Basic filter - must be for this partner
