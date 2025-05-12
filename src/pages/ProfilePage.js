@@ -1,121 +1,159 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../utils/AuthContext';
-import NavBar from '../components/NavBar';
+import { useWorkspace } from '../context/WorkspaceContext';
+import withNavbar from '../components/withNavbar';
+import { partnerPortalService } from '../utils/apiService';
 
 const ProfilePage = () => {
-  const { currentPartner } = useAuth();
+  const { userData } = useAuth();
+  const { currentWorkspace } = useWorkspace();
+  const [partnerProfile, setPartnerProfile] = useState(currentWorkspace);
+  const [userProfile, setUserProfile] = useState(userData);
+  const [activeTab, setActiveTab] = useState('information');
+
+  // If a real API endpoint for partner profile exists, fetch it here
+  useEffect(() => {
+    // Example: Uncomment and adjust if such an endpoint exists
+    // if (!currentWorkspace?.id || !token) return;
+    // setLoading(true);
+    // setError('');
+    // partnerPortalService.getPartnerProfile(currentWorkspace.id, token)
+    //   .then(data => {
+    //     setPartnerProfile(data.partner || data);
+    //     setLoading(false);
+    //   })
+    //   .catch(err => {
+    //     setError(err.message || 'Failed to load profile');
+    //     setLoading(false);
+    //   });
+    setPartnerProfile(currentWorkspace);
+    setUserProfile(userData);
+  }, [currentWorkspace, userData]);
+
+
+  if (!partnerProfile) {
+    return <div className="min-h-screen flex items-center justify-center text-gray-600">No profile data available.</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavBar />
-      
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-6">Partner Profile</h1>
-          
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Partner Information
-              </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Details and settings for your organization.
-              </p>
-            </div>
-            <div className="border-t border-gray-200">
-              <dl>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Partner Name</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.name}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Partner ID</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.id}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">API Key</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.key}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Subdomain</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.subdomain}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Support Email</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.supportEmail}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Phone Number</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.phone}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Download Reports</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.downloadEnabled ? 'Enabled' : 'Disabled'}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Custom Message</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {currentPartner.customMessage || 'No custom message set.'}
-                  </dd>
-                </div>
-              </dl>
-            </div>
+    <div className="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
+          <div className="p-6 sm:p-8 bg-gradient-to-r from-indigo-700 to-blue-600 text-white">
+            <h1 className="text-2xl font-bold mb-2">Profile</h1>
+            <p className="text-indigo-100">
+              View and manage your profile and workspace settings
+            </p>
           </div>
           
-          {/* Available Assessments */}
-          <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Available Assessments
-              </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Assessment types enabled for your organization.
-              </p>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {currentPartner.assessments.map(assessment => (
-                  <li key={assessment.id} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-indigo-600 truncate">
-                        {assessment.name}
-                      </p>
-                      <div className="ml-2 flex-shrink-0 flex">
-                        <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Enabled
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-2 sm:flex sm:justify-between">
-                      <div className="sm:flex">
-                        <p className="flex items-center text-sm text-gray-500">
-                          ID: {assessment.id}
-                        </p>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Tabs */}
+          <div className="bg-white border-b border-gray-200">
+            <nav className="-mb-px flex space-x-6 px-6" aria-label="Tabs">
+              <button
+                onClick={() => setActiveTab('information')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'information'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Information
+              </button>
+              <button
+                onClick={() => setActiveTab('preferences')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'preferences'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Preferences
+              </button>
+              <button
+                onClick={() => setActiveTab('security')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'security'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Security
+              </button>
+            </nav>
           </div>
+          
+          {/* Tab Content */}
+          {activeTab === 'information' && (
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="text-md font-medium text-gray-900 mb-3">User Information</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Name</span>
+                      <span className="text-sm text-gray-900">{userProfile?.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Email</span>
+                      <span className="text-sm text-gray-900">{userProfile?.email}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="text-md font-medium text-gray-900 mb-3">Current Workspace</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Partner Name</span>
+                      <span className="text-sm text-gray-900">{partnerProfile?.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Support Email</span>
+                      <span className="text-sm text-gray-900">{partnerProfile?.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Phone Number</span>
+                      <span className="text-sm text-gray-900">{partnerProfile?.phone}</span>
+                    </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'preferences' && (
+            <div className="p-6">
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <div className="flex">
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-700">
+                      Preference settings are not yet available.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'security' && (
+            <div className="p-6">
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <div className="flex">
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-700">
+                      Security settings are not yet available.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };
 
-export default ProfilePage; 
+export default withNavbar(ProfilePage); 
